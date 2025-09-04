@@ -1,7 +1,7 @@
 """
 ADT Conjunto implementado con Estructuras Dinámicas
 Autor: Jose Carlos Justiniano Montaño
-GitHub: https://github.com/[tu_usuario]/adt-conjunto-dinamico
+GitHub: https://github.com/JoseC2005/INF220-2025.git
 """
 
 class ConjuntoDinamico:

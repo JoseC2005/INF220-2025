@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADT Lineales - Conjuntos y Polinomios</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+</head>
+<body>
+    <div class="container my-4">
+        <header class="text-center mb-4">
+            <h1 class="text-primary">ADT Lineales</h1>
+            <p class="lead">Operaciones con Conjuntos y Polinomios</p>
+        </header>
+
+        <div class="row">
+            <!-- Panel de Conjuntos -->
+            <div class="col-md-6 mb-4">
+                <div class="card border-primary">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Operaciones con Conjuntos</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/operacion_conjunto" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Conjunto A (separado por comas):</label>
+                                <input type="text" class="form-control" name="conjuntoA" value="1, 2, 3, 4, 5" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Conjunto B (separado por comas):</label>
+                                <input type="text" class="form-control" name="conjuntoB" value="4, 5, 6, 7, 8" required>
+                            </div>
+                            
+                            <div class="d-grid gap-2 mb-3">
+                                <button type="submit" class="btn btn-primary" name="operacion" value="union">Unión (A ∪ B)</button>
+                                <button type="submit" class="btn btn-success" name="operacion" value="interseccion">Intersección (A ∩ B)</button>
+                                <button type="submit" class="btn btn-warning" name="operacion" value="diferencia">Diferencia (A - B)</button>
+                                <button type="submit" class="btn btn-info" name="operacion" value="diferencia_simetrica">Diferencia Simétrica (A Δ B)</button>
+                            </div>
+                        </form>
+                        {% if resultado_conjuntos %}
+                            <div class="alert alert-info mt-3">
+                                <strong>Resultado:</strong> {{ resultado_conjuntos }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Panel de Polinomios -->
+            <div class="col-md-6 mb-4">
+    <div class="card border-success">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">Operaciones con Polinomios</h5>
+        </div>
+        <div class="card-body">
+            <form action="/operacion_polinomio" method="post">
+                <div class="mb-3">
+                    <label class="form-label">Polinomio P (ej: 3x^2+2x-5):</label>
+                    <input type="text" class="form-control" name="polinomioP" 
+                           value="{{ polinomioP or '3x^2+2x-5' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Polinomio Q (ej: 2x^2-3x+7):</label>
+                    <input type="text" class="form-control" name="polinomioQ" 
+                           value="{{ polinomioQ or '2x^2-3x+7' }}" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Valor de x para Evaluación:</label>
+                    <input type="number" step="any" class="form-control" name="valorX" 
+                           value="{{ valorX or '' }}">
+                </div>
+                
+                <div class="d-grid gap-2 mb-3">
+                    <button type="submit" class="btn btn-success" name="operacion" value="suma">Suma (P + Q)</button>
+                    <button type="submit" class="btn btn-primary" name="operacion" value="resta">Resta (P - Q)</button>
+                    <button type="submit" class="btn btn-warning" name="operacion" value="multiplicacion">Multiplicación (P * Q)</button>
+                    <button type="submit" class="btn btn-info" name="operacion" value="evaluacion">Evaluar P(x) o R(x)</button>
+                </div>
+            </form>
+            {% if resultado_polinomios %}
+                <div class="alert alert-info mt-3">
+                    <strong>Resultado:</strong> {{ resultado_polinomios }}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+        
+        <!-- Información del Proyecto -->
+        <div class="card border-secondary mb-4">
+            <div class="card-header bg-secondary text-white">
+                <h5 class="mb-0">Información del Proyecto</h5>
+            </div>
+            <div class="card-body">
+                <p>Esta aplicación implementa Abstract Data Types (ADT) lineales como Conjuntos y Polinomios.</p>
+                <p><strong>Fecha de entrega:</strong> Jueves, 18 de septiembre de 2025, 15:00</p>
+                <p><strong>Tecnologías:</strong> Flask (Python), HTML, Bootstrap</p>
+                <div class="text-center mt-3">
+                    <a href="#" class="btn btn-primary me-2">Ver en GitHub</a>
+                    <a href="#" class="btn btn-success">Descargar Código</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="bg-dark text-white text-center py-3 mt-5">
+        <p class="mb-0">© 2025 - Implementación de UI a ADT lineales</p>
+    </footer>
+</body>
+</html>

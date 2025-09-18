@@ -24,12 +24,12 @@
                     <div class="card-body">
                         <form action="/operacion_conjunto" method="post">
                             <div class="mb-3">
-                                <label class="form-label">Conjunto A (separado por comas):</label>
-                                <input type="text" class="form-control" name="conjuntoA" value="1, 2, 3, 4, 5" required>
+                                <label class="form-label">Conjunto A (separado por comas) ej: 1,2,3:</label>
+                                <input type="text" class="form-control" name="conjuntoA" value="{{ conjuntoA or '' }}" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Conjunto B (separado por comas):</label>
-                                <input type="text" class="form-control" name="conjuntoB" value="4, 5, 6, 7, 8" required>
+                                <label class="form-label">Conjunto B (separado por comas) ej: 4,5,6:</label>
+                                <input type="text" class="form-control" name="conjuntoB" value="{{ conjuntoB or '' }}" required>
                             </div>
                             
                             <div class="d-grid gap-2 mb-3">
@@ -44,49 +44,93 @@
                                 <strong>Resultado:</strong> {{ resultado_conjuntos }}
                             </div>
                         {% endif %}
+
+                        <!-- AQUÍ VA EL DIAGRAMA DE VENN -->
+{% if set_a and set_b and operacion %}
+<div class="venn-container mt-4">
+    <h6 class="text-center mb-3">Diagrama de Venn - {{ operacion | capitalize }}</h6>
+    
+    <div class="venn-circle circle-a">
+        <span class="venn-label">A: {{ set_a | join(', ') }}</span>
+    </div>
+    <div class="venn-circle circle-b">
+        <span class="venn-label">B: {{ set_b | join(', ') }}</span>
+    </div>
+    
+    <div class="operation-result">
+        <span>
+            {% if operacion == "union" %}
+                A ∪ B: {{ (set_a, set_b, operacion) | set_operation | join(', ') }}
+            {% elif operacion == "interseccion" %}
+                A ∩ B: {{ (set_a, set_b, operacion) | set_operation | join(', ') }}
+            {% elif operacion == "diferencia" %}
+                A - B: {{ (set_a, set_b, operacion) | set_operation | join(', ') }}
+            {% elif operacion == "diferencia_simetrica" %}
+                A Δ B: {{ (set_a, set_b, operacion) | set_operation | join(', ') }}
+            {% endif %}
+        </span>
+    </div>
+</div>
+{% endif %}
                     </div>
                 </div>
             </div>
             
             <!-- Panel de Polinomios -->
             <div class="col-md-6 mb-4">
-    <div class="card border-success">
-        <div class="card-header bg-success text-white">
-            <h5 class="mb-0">Operaciones con Polinomios</h5>
+                <div class="card border-success">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">Operaciones con Polinomios</h5>
+                    </div>
+                    <div class="card-body">
+                        <form action="/operacion_polinomio" method="post">
+                            <div class="mb-3">
+                                <label class="form-label">Polinomio P (ej: 3x^2+2x-5):</label>
+                                <input type="text" class="form-control" name="polinomioP" 
+                                       value="{{ polinomioP or '3x^2+2x-5' }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Polinomio Q (ej: 2x^2-3x+7):</label>
+                                <input type="text" class="form-control" name="polinomioQ" 
+                                       value="{{ polinomioQ or '2x^2-3x+7' }}" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Valor de x para Evaluación:</label>
+                                <input type="number" step="any" class="form-control" name="valorX" 
+                                       value="{{ valorX or '' }}">
+                            </div>
+                            
+                            <div class="d-grid gap-2 mb-3">
+                                <button type="submit" class="btn btn-success" name="operacion" value="suma">Suma (P + Q)</button>
+                                <button type="submit" class="btn btn-primary" name="operacion" value="resta">Resta (P - Q)</button>
+                                <button type="submit" class="btn btn-warning" name="operacion" value="multiplicacion">Multiplicación (P * Q)</button>
+                                <button type="submit" class="btn btn-info" name="operacion" value="evaluacion">Evaluar R(x)</button>
+                            </div>
+                        </form>
+                        
+                        {% if polinomioR %}
+                            <div class="alert alert-secondary mt-3">
+                                <strong>R(x):</strong> {{ polinomioR }}
+                            </div>
+                        {% endif %}
+                        
+                        {% if resultado_polinomios %}
+                            <div class="alert alert-info mt-3">
+                                <strong>Resultado:</strong> {{ resultado_polinomios }}
+                            </div>
+                        {% endif %}
+                        
+                        {% if evaluando_polinomio and valor_evaluacion %}
+                            <div class="evaluacion-info mt-3">
+                                <strong>Evaluando:</strong> {{ evaluando_polinomio }}<br>
+                                <strong>Con x =</strong> {{ valor_evaluacion }}<br>
+                                <strong>Resultado:</strong> {{ resultado_evaluacion }}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="card-body">
-            <form action="/operacion_polinomio" method="post">
-                <div class="mb-3">
-                    <label class="form-label">Polinomio P (ej: 3x^2+2x-5):</label>
-                    <input type="text" class="form-control" name="polinomioP" 
-                           value="{{ polinomioP or '3x^2+2x-5' }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Polinomio Q (ej: 2x^2-3x+7):</label>
-                    <input type="text" class="form-control" name="polinomioQ" 
-                           value="{{ polinomioQ or '2x^2-3x+7' }}" required>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Valor de x para Evaluación:</label>
-                    <input type="number" step="any" class="form-control" name="valorX" 
-                           value="{{ valorX or '' }}">
-                </div>
-                
-                <div class="d-grid gap-2 mb-3">
-                    <button type="submit" class="btn btn-success" name="operacion" value="suma">Suma (P + Q)</button>
-                    <button type="submit" class="btn btn-primary" name="operacion" value="resta">Resta (P - Q)</button>
-                    <button type="submit" class="btn btn-warning" name="operacion" value="multiplicacion">Multiplicación (P * Q)</button>
-                    <button type="submit" class="btn btn-info" name="operacion" value="evaluacion">Evaluar P(x) o R(x)</button>
-                </div>
-            </form>
-            {% if resultado_polinomios %}
-                <div class="alert alert-info mt-3">
-                    <strong>Resultado:</strong> {{ resultado_polinomios }}
-                </div>
-            {% endif %}
-        </div>
-    </div>
-</div>
         
         <!-- Información del Proyecto -->
         <div class="card border-secondary mb-4">
@@ -94,9 +138,9 @@
                 <h5 class="mb-0">Información del Proyecto</h5>
             </div>
             <div class="card-body">
-                <p>Esta aplicación implementa Abstract Data Types (ADT) lineales como Conjuntos y Polinomios.</p>
+                <p>Esta aplicación implementa Abstract Data Types (ADT) lineales como Conjuntos y Polinomios. "botones de abajo no implementados"</p>
                 <p><strong>Fecha de entrega:</strong> Jueves, 18 de septiembre de 2025, 15:00</p>
-                <p><strong>Tecnologías:</strong> Flask (Python), HTML, Bootstrap</p>
+                <p><strong>Tecnologías:</strong> Flask (Python), HTML, CSS, jinja2</p>
                 <div class="text-center mt-3">
                     <a href="#" class="btn btn-primary me-2">Ver en GitHub</a>
                     <a href="#" class="btn btn-success">Descargar Código</a>

@@ -1,3 +1,4 @@
+# app.py
 from flask import Flask, render_template, request
 import os
 from modelos import (
@@ -8,6 +9,7 @@ from modelos import (
 )
 
 app = Flask(__name__)
+app.secret_key = os.environ.get('SECRET_KEY', 'dev-key-please-change-in-production')
 
 # Registrar filtro personalizado
 app.jinja_env.filters['set_operation'] = set_operation_filter
@@ -25,12 +27,16 @@ def operacion_polinomio():
     """Procesa operaciones con polinomios."""
     global ultimo_resultado_polinomio
 
-    polinomio_p_str = request.form['polinomioP']
-    polinomio_q_str = request.form['polinomioQ']
-    operacion = request.form['operacion']
-    valor_x = request.form.get('valorX')
+    polinomio_p_str = request.form.get('polinomioP', '')
+    polinomio_q_str = request.form.get('polinomioQ', '')
+    operacion = request.form.get('operacion', '')
+    valor_x = request.form.get('valorX', '')
 
     try:
+        # Validar que los campos requeridos estén presentes
+        if not polinomio_p_str or not polinomio_q_str or not operacion:
+            raise ValueError("Faltan campos requeridos")
+
         # Crear objetos Polinomio (Modelo)
         pol_p = Polinomio(polinomio_p_str)
         pol_q = Polinomio(polinomio_q_str)
@@ -91,11 +97,15 @@ def operacion_polinomio():
 @app.route('/operacion_conjunto', methods=['POST'])
 def operacion_conjunto():
     """Procesa operaciones con conjuntos."""
-    conjunto_a_str = request.form['conjuntoA']
-    conjunto_b_str = request.form['conjuntoB']
-    operacion = request.form['operacion']
+    conjunto_a_str = request.form.get('conjuntoA', '')
+    conjunto_b_str = request.form.get('conjuntoB', '')
+    operacion = request.form.get('operacion', '')
 
     try:
+        # Validar campos requeridos
+        if not conjunto_a_str or not conjunto_b_str or not operacion:
+            raise ValueError("Faltan campos requeridos")
+
         # Crear objetos Conjunto (Modelo)
         conjunto_a = Conjunto.desde_string(conjunto_a_str)
         conjunto_b = Conjunto.desde_string(conjunto_b_str)
@@ -124,10 +134,13 @@ def operacion_conjunto():
     # Preparar conjuntos para mostrar en template
     set_a = []
     set_b = []
-    if 'conjunto_a' in locals():
-        set_a = conjunto_a.to_list()
-    if 'conjunto_b' in locals():
-        set_b = conjunto_b.to_list()
+    try:
+        if conjunto_a_str:
+            set_a = Conjunto.desde_string(conjunto_a_str).to_list()
+        if conjunto_b_str:
+            set_b = Conjunto.desde_string(conjunto_b_str).to_list()
+    except:
+        pass
 
     return render_template(
         'index.html',
@@ -142,7 +155,4 @@ def operacion_conjunto():
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
-else:
-    # Para producción en Vercel
-    app = app
+    app.run(host="0.0.0.0", port=port, debug=os.environ.get('DEBUG', False))

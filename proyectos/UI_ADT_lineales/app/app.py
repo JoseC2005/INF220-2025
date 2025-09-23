@@ -1,33 +1,23 @@
 from flask import Flask, render_template, request
 import os
-import sys
-
-# Obtener la ruta base del proyecto
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-# Configurar Flask con las rutas correctas
-app = Flask(
-    __name__,
-    template_folder=os.path.join(BASE_DIR, 'templates'),
-    static_folder=os.path.join(BASE_DIR, 'static')
-)
-
-# Agregar el path para importar modelos
-sys.path.append(BASE_DIR)
-from models.modelos import (
-    Polinomio, Conjunto,
-    set_operation_filter,
+from modelos import (
+    Polinomio, 
+    Conjunto, 
+    set_operation_filter, 
     ultimo_resultado_polinomio
 )
 
+app = Flask(__name__)
+
+# Registrar filtro personalizado
 app.jinja_env.filters['set_operation'] = set_operation_filter
 
-# Tus rutas (index, operacion_polinomio, operacion_conjunto)
+
+# ========== RUTAS ==========
 @app.route('/')
 def index():
+    """Página principal."""
     return render_template('index.html')
-# ========== RUTAS ==========
-
 
 
 @app.route('/operacion_polinomio', methods=['POST'])
@@ -151,6 +141,5 @@ def operacion_conjunto():
 
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5500))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
-    

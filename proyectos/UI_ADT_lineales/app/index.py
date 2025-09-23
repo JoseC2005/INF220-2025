@@ -1,1 +1,0 @@
-from app.controllers.app import app

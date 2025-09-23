@@ -10,6 +10,11 @@ from modelos import (
 
 app = Flask(__name__)
 
+# Configuración para Vercel
+@app.route('/static/<path:path>')
+def serve_static(path):
+    return app.send_static_file(path)
+
 # Registrar filtro personalizado
 app.jinja_env.filters['set_operation'] = set_operation_filter
 

@@ -1,19 +1,11 @@
-# app.py
 from flask import Flask, render_template, request
 import os
-from modelos import (
-    Polinomio, 
-    Conjunto, 
-    set_operation_filter, 
-    ultimo_resultado_polinomio
-)
+import sys
+# Importar desde la nueva ubicación
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from models.modelos import Polinomio, Conjunto, set_operation_filter, ultimo_resultado_polinomio
 
 app = Flask(__name__)
-
-# Configuración para Vercel
-@app.route('/static/<path:path>')
-def serve_static(path):
-    return app.send_static_file(path)
 
 # Registrar filtro personalizado
 app.jinja_env.filters['set_operation'] = set_operation_filter

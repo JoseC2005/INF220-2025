@@ -6,14 +6,19 @@ import sys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Configurar Flask con las rutas correctas
-app = Flask(__name__, 
+app = Flask(
+    __name__,
     template_folder=os.path.join(BASE_DIR, 'templates'),
     static_folder=os.path.join(BASE_DIR, 'static')
 )
 
 # Agregar el path para importar modelos
 sys.path.append(BASE_DIR)
-from models.modelos import Polinomio, Conjunto, set_operation_filter, ultimo_resultado_polinomio
+from models.modelos import (
+    Polinomio, Conjunto,
+    set_operation_filter,
+    ultimo_resultado_polinomio
+)
 
 app.jinja_env.filters['set_operation'] = set_operation_filter
 
@@ -148,3 +153,4 @@ def operacion_conjunto():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5500))
     app.run(host="0.0.0.0", port=port, debug=True)
+    
